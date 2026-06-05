@@ -1,0 +1,1603 @@
+<!-- Vet Student_New_4 -->
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบสอบถาม CU i-VET — นิสิตและศิษย์เก่า</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary:       #df587c;
+            --bg:            #ffffff;
+            --highlight:     #8cb8e6;
+            --text:          #333;
+            --text-muted:    #555;
+            --error:         #e53e3e;
+            --error-bg:      #fff5f5;
+            --error-border:  #fc8181;
+            --success:       #38a169;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 10px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1100px; margin: auto; }
+
+        /* ===== QUESTION CARD ===== */
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .question-card.has-error {
+            border-color: var(--error-border);
+            box-shadow: 0 0 0 3px rgba(229,62,62,0.15), 0 2px 8px rgba(0,0,0,0.06);
+            background-color: var(--error-bg);
+        }
+        .error-message {
+            display: none;
+            color: var(--error);
+            font-size: 0.88rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(229,62,62,0.08);
+            border-radius: 6px;
+            border-left: 3px solid var(--error);
+        }
+        .question-card.has-error .error-message { display: block; }
+
+        /* ===== SECTION HEADER ===== */
+        .section-header {
+            border-left: 8px solid var(--primary);
+            margin-bottom: 4px;
+            margin-top: 20px;
+        }
+        .section-header:first-child { margin-top: 0; }
+        .section-header h3 { color: var(--primary); margin: 0; font-size: 1.1rem; }
+        .section-header p  { font-size: 0.9rem; color: #666; margin: 5px 0 0 0; }
+
+        /* ===== TYPOGRAPHY ===== */
+        .question-title {
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: block;
+        }
+        .question-subtitle {
+            font-weight: normal;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: block;
+        }
+        .required { color: var(--error); margin-left: 5px; }
+
+        /* ===== INPUTS ===== */
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1rem;
+            color: var(--text);
+            transition: border-color 0.2s;
+            appearance: none;
+            background: white;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        input[type="text"]:disabled { background: #f5f5f5; color: #aaa; cursor: not-allowed; }
+        textarea { resize: vertical; min-height: 80px; }
+
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: '▾';
+            position: absolute; right: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted); pointer-events: none;
+        }
+        .select-wrapper select { padding-right: 36px; cursor: pointer; }
+
+        /* ===== RADIO & CHECKBOX ===== */
+        .radio-group { margin: 10px 0; }
+        .radio-item {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .radio-item input[type="radio"] {
+            margin-right: 12px;
+            width: 18px; height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+        }
+        .checkbox-item {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px; height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+        .checkbox-label { flex: 1; }
+
+        .other-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .other-row input[type="checkbox"] {
+            width: 18px; height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+        }
+        .other-row .other-label { white-space: nowrap; color: var(--text-muted); }
+        .other-row .other-text-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.2s, background 0.2s;
+            background: #f9f9f9;
+            color: #aaa;
+        }
+        .other-row .other-text-input:not(:disabled) {
+            background: white;
+            color: var(--text);
+            border-color: var(--primary);
+        }
+        .other-row .other-text-input:focus { outline: none; border-color: var(--primary); }
+
+        /* ===== CONDITIONAL SECTION ===== */
+        .conditional-section {
+            display: none;
+            animation: fadeSlideIn 0.3s ease;
+        }
+        .conditional-section.visible { display: block; }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SUB-CARD ===== */
+        .sub-card {
+            background: #e8f2fb;
+            border: 1px solid #c5d9f0;
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin-top: 10px;
+        }
+        .sub-card-label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #3a72a8;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* ===== YEAR PILLS ===== */
+        .year-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .year-pill {
+            padding: 6px 20px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text);
+            transition: border-color 0.2s, background 0.2s, color 0.2s;
+        }
+        .year-pill:hover  { border-color: var(--primary); color: var(--primary); }
+        .year-pill.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* ===== LIKERT 1–5 ===== */
+        .single-scale-standalone {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fcfdff;
+            border-top: 5px solid var(--highlight);
+        }
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .single-likert {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5px;
+        }
+        .option { text-align: center; flex: 1; }
+        .option label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #666; font-weight: bold; }
+        .option input[type="radio"] {
+            accent-color: var(--primary);
+            width: 18px; height: 18px;
+            cursor: pointer;
+        }
+
+        /* ===== LIKERT ITEM CARD ===== */
+        .likert-item-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 2px solid transparent;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+        }
+        .likert-item-card.has-error {
+            border-color: var(--error-border);
+            box-shadow: 0 0 0 3px rgba(229,62,62,0.15), 0 2px 8px rgba(0,0,0,0.06);
+            background-color: var(--error-bg);
+        }
+        .likert-item-card .error-message {
+            display: none;
+            color: var(--error);
+            font-size: 0.88rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(229,62,62,0.08);
+            border-radius: 6px;
+            border-left: 3px solid var(--error);
+        }
+        .likert-item-card.has-error .error-message { display: block; }
+
+        /* ===== TWO-COL LIKERT (S4) ===== */
+        .scale-row { display: flex; gap: 16px; }
+        .scale-row .single-scale { flex: 1; min-width: 0; }
+        .single-scale {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fcfdff;
+            border-top: 5px solid var(--highlight);
+        }
+        .single-scale.scale-target { border-top-color: var(--primary); background: #fffcfd; }
+        .scale-header { font-weight: bold; text-align: center; margin-bottom: 10px; font-size: 0.95rem; }
+
+        @media (max-width: 640px) {
+            .scale-row { flex-direction: column; }
+        }
+
+        /* ===== 3-POINT SCALE ===== */
+        .three-point-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 2px solid transparent;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+        }
+        .three-point-card.has-error {
+            border-color: var(--error-border);
+            box-shadow: 0 0 0 3px rgba(229,62,62,0.15), 0 2px 8px rgba(0,0,0,0.06);
+            background-color: var(--error-bg);
+        }
+        .three-point-card .error-message {
+            display: none;
+            color: var(--error);
+            font-size: 0.88rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(229,62,62,0.08);
+            border-radius: 6px;
+            border-left: 3px solid var(--error);
+        }
+        .three-point-card.has-error .error-message { display: block; }
+        .three-point-scale {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            background: #fcfdff;
+            border-top: 5px solid var(--highlight);
+            margin-top: 8px;
+        }
+        .three-point-likert {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 5px;
+        }
+        .three-point-likert .option { flex: 1; text-align: center; }
+        .three-point-likert .option label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: #555;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+        .three-point-likert .option input[type="radio"] {
+            accent-color: var(--primary);
+            width: 18px; height: 18px;
+            cursor: pointer;
+        }
+        .item-subtext {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 2px 0 0 0;
+            display: block;
+        }
+
+        /* ===== COMPETENCY CARDS ===== */
+        .competency-category {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .competency-category-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .competency-category-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px; height: 18px;
+            background: var(--primary);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        /* ===== FACILITY GROUP CARD ===== */
+        .facility-group-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .facility-group-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+            color: var(--text);
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .facility-sub-item {
+            border: 1px solid #e8eef5;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            background: #fafcff;
+            border: 2px solid transparent;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+        }
+        .facility-sub-item:last-child { margin-bottom: 0; }
+        .facility-sub-item.has-error {
+            border-color: var(--error-border);
+            box-shadow: 0 0 0 3px rgba(229,62,62,0.15);
+            background-color: var(--error-bg);
+        }
+        .facility-sub-item .error-message {
+            display: none;
+            color: var(--error);
+            font-size: 0.88rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(229,62,62,0.08);
+            border-radius: 6px;
+            border-left: 3px solid var(--error);
+        }
+        .facility-sub-item.has-error .error-message { display: block; }
+        .facility-sub-item-title {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .facility-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+        .facility-textarea-item {
+            border: 1px solid #e8eef5;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            background: #fafcff;
+        }
+        .facility-textarea-item label {
+            font-weight: bold;
+            font-size: 1rem;
+            color: var(--text);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            padding: 20px 0 80px;
+            align-items: center;
+        }
+        .btn {
+            padding: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            font-family: 'Sarabun', sans-serif;
+            transition: all 0.2s ease;
+            text-align: center;
+            border: none;
+        }
+        .btn-primary { flex: 2; background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(223,88,124,0.3); }
+        .btn-primary:hover { opacity: 0.92; }
+        .btn-secondary { flex: 1; background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 9999;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; animation: overlayFadeIn 0.25s ease forwards; }
+        @keyframes overlayFadeIn {
+            from { background: rgba(0,0,0,0); }
+            to   { background: rgba(0,0,0,0.45); }
+        }
+        .modal-box {
+            background: white;
+            border-radius: 24px 24px 0 0;
+            padding: 12px 32px 44px;
+            max-width: 100%; width: 100%;
+            text-align: center;
+            box-shadow: 0 -8px 40px rgba(0,0,0,0.15);
+            animation: slideFromBottom 0.35s cubic-bezier(0.34,1.2,0.64,1) forwards;
+        }
+        @keyframes slideFromBottom {
+            from { transform: translateY(100%); opacity: 0.6; }
+            to   { transform: translateY(0);    opacity: 1;   }
+        }
+        .modal-handle { width: 40px; height: 4px; background: #ddd; border-radius: 2px; margin: 16px auto 24px; }
+        .modal-icon   { font-size: 2.8rem; margin-bottom: 10px; }
+        .modal-title  { font-size: 1.3rem; font-weight: bold; color: var(--text); margin-bottom: 8px; }
+        .modal-body   { font-size: 1rem; color: #666; margin-bottom: 28px; line-height: 1.6; }
+        .modal-btn-group { display: flex; gap: 10px; justify-content: center; }
+        .modal-btn {
+            padding: 14px 32px; border-radius: 12px;
+            font-family: 'Sarabun', sans-serif; font-size: 1rem; font-weight: bold;
+            cursor: pointer; border: none; transition: all 0.2s;
+            flex: 1; max-width: 200px;
+        }
+        .modal-btn-primary  { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(223,88,124,0.3); }
+        .modal-btn-primary:hover  { opacity: 0.9; transform: translateY(-1px); }
+        .modal-btn-secondary { background: #f0f0f0; color: var(--text-muted); }
+        .modal-btn-secondary:hover { background: #e0e0e0; }
+        .modal-icon-success { color: var(--success); }
+        .modal-icon-confirm { color: #e6a817; }
+
+        .section-gap { height: 20px; }
+
+        @media (max-width: 640px) {
+            .btn-group { flex-direction: column-reverse; }
+            .btn { width: 100%; flex: none; }
+            .modal-box { padding: 12px 20px 36px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Modal: ยืนยันล้างข้อมูล -->
+<div class="modal-overlay" id="modal-confirm-reset">
+    <div class="modal-box">
+        <div class="modal-handle"></div>
+        <div class="modal-icon modal-icon-confirm">🗑️</div>
+        <div class="modal-title">ล้างข้อมูลทั้งหมด?</div>
+        <div class="modal-body">ข้อมูลที่กรอกไว้ทั้งหมดจะถูกลบออก<br>และไม่สามารถกู้คืนได้</div>
+        <div class="modal-btn-group">
+            <button class="modal-btn modal-btn-secondary" onclick="closeModal('modal-confirm-reset')">ยกเลิก</button>
+            <button class="modal-btn modal-btn-primary"   onclick="doReset()">ล้างข้อมูล</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: ส่งสำเร็จ / ผิดพลาด -->
+<div class="modal-overlay" id="modal-success">
+    <div class="modal-box">
+        <div class="modal-handle"></div>
+        <div class="modal-icon modal-icon-success" id="modal-success-icon">✅</div>
+        <div class="modal-title" id="modal-success-title">ส่งแบบสอบถามสำเร็จ!</div>
+        <div class="modal-body"  id="modal-success-body">ขอบคุณสำหรับความร่วมมือในการตอบแบบสอบถามครั้งนี้<br>ข้อมูลของท่านจะถูกใช้เพื่อพัฒนาหลักสูตร CU i-VET เท่านั้น</div>
+        <div class="modal-btn-group">
+            <button class="modal-btn modal-btn-primary" onclick="closeModal('modal-success')">ปิด</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+<!-- ==================== ส่วนที่ 1 ==================== -->
+<div class="question-card section-header">
+    <h3>ส่วนที่ 1: ข้อมูลทั่วไปของผู้ตอบแบบสอบถาม</h3>
+</div>
+
+<!-- Q1: เพศ -->
+<div class="question-card" id="card-s1_gender">
+    <label class="question-title">1. เพศของท่าน <span class="required">*</span></label>
+    <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="s1_gender" value="ชาย"> ชาย</label>
+        <label class="radio-item"><input type="radio" name="s1_gender" value="หญิง"> หญิง</label>
+        <label class="radio-item"><input type="radio" name="s1_gender" value="อื่น ๆ"> อื่น ๆ</label>
+        <label class="radio-item"><input type="radio" name="s1_gender" value="ไม่ต้องการระบุ"> ไม่ต้องการระบุ</label>
+    </div>
+    <div class="error-message">กรุณาระบุเพศ</div>
+</div>
+
+<!-- Q2: อายุ -->
+<div class="question-card" id="card-s1_age">
+    <label class="question-title">2. โปรดระบุอายุของท่าน <span class="required">*</span></label>
+    <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="s1_age" value="ต่ำกว่า 18 ปี"> ต่ำกว่า 18 ปี</label>
+        <label class="radio-item"><input type="radio" name="s1_age" value="18 - 25 ปี"> 18 – 25 ปี</label>
+        <label class="radio-item"><input type="radio" name="s1_age" value="26 - 35 ปี"> 26 – 35 ปี</label>
+        <label class="radio-item"><input type="radio" name="s1_age" value="36 - 45 ปี"> 36 – 45 ปี</label>
+        <label class="radio-item"><input type="radio" name="s1_age" value="มากกว่า 45 ปี"> มากกว่า 45 ปี</label>
+    </div>
+    <div class="error-message">กรุณาเลือกช่วงอายุ</div>
+</div>
+
+<!-- Q3: สถานะนิสิต -->
+<div class="question-card" id="card-s1_status">
+    <label class="question-title">3. สถานะนิสิตของท่าน <span class="required">*</span></label>
+    <div class="radio-group">
+        <label class="radio-item">
+            <input type="radio" name="s1_status" value="นิสิตปัจจุบัน" onchange="onStatusChange()"> นิสิตปัจจุบัน
+        </label>
+        <label class="radio-item">
+            <input type="radio" name="s1_status" value="ศิษย์เก่า" onchange="onStatusChange()"> ศิษย์เก่า
+        </label>
+    </div>
+
+    <!-- ─── นิสิตปัจจุบัน ─── -->
+    <div class="conditional-section" id="status-current-wrap">
+        <div class="sub-card">
+            <span class="sub-card-label">3.1 สถาบันที่ท่านกำลังศึกษา <span class="required">*</span></span>
+            <div class="select-wrapper" style="margin-bottom:10px;">
+                <select id="s1_institution_cur" onchange="onCurInstitutionChange()">
+                    <option value="">— โปรดเลือกสถาบัน —</option>
+                    <option>จุฬาลงกรณ์มหาวิทยาลัย</option>
+                    <option>มหาวิทยาลัยเกษตรศาสตร์</option>
+                    <option>มหาวิทยาลัยขอนแก่น</option>
+                    <option>มหาวิทยาลัยเทคโนโลยีมหานคร</option>
+                    <option>มหาวิทยาลัยมหิดล</option>
+                    <option>มหาวิทยาลัยเชียงใหม่</option>
+                    <option>มหาวิทยาลัยมหาสารคาม</option>
+                    <option>มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</option>
+                    <option>มหาวิทยาลัยเทคโนโลยีราชมงคลตะวันออก</option>
+                    <option>มหาวิทยาลัยสงขลานครินทร์</option>
+                    <option>มหาวิทยาลัยเวสเทิร์น</option>
+                    <option>มหาวิทยาลัยวลัยลักษณ์</option>
+                    <option value="other">อื่น ๆ</option>
+                </select>
+            </div>
+            <div class="conditional-section" id="cur-institution-other-wrap" style="margin-bottom:12px;">
+                <input type="text" id="s1_institution_cur_other" placeholder="โปรดระบุชื่อสถาบัน">
+            </div>
+            <span class="sub-card-label" style="margin-top:8px; display:block;">3.2 สาขาวิชา <span class="required">*</span></span>
+            <div class="select-wrapper" style="margin-bottom:12px;">
+                <select id="s1_major_cur">
+                    <option value="สัตวแพทยศาสตร์บัณฑิต" selected>สัตวแพทยศาสตร์บัณฑิต</option>
+                    <option value="สาขาวิชาการพยาบาลสัตว์">สาขาวิชาการพยาบาลสัตว์</option>
+                    <option value="สาขาวิชาเทคนิคการสัตวแพทย์">สาขาวิชาเทคนิคการสัตวแพทย์</option>
+                    <option value="สาขาวิชาเทคโนโลยีชีวภาพสัตว์">สาขาวิชาเทคโนโลยีชีวภาพสัตว์</option>
+                    <option value="สาขาวิทยาศาสตร์สุขภาพสัตว์">สาขาวิทยาศาสตร์สุขภาพสัตว์</option>
+                </select>
+            </div>
+            <span class="sub-card-label" style="margin-top:8px; display:block;">3.3 ชั้นปีที่ศึกษา <span class="required">*</span></span>
+            <div class="year-pills">
+                <button type="button" class="year-pill" onclick="selectYear(this,'1')">ปี 1</button>
+                <button type="button" class="year-pill" onclick="selectYear(this,'2')">ปี 2</button>
+                <button type="button" class="year-pill" onclick="selectYear(this,'3')">ปี 3</button>
+                <button type="button" class="year-pill" onclick="selectYear(this,'4')">ปี 4</button>
+                <button type="button" class="year-pill" onclick="selectYear(this,'5')">ปี 5</button>
+                <button type="button" class="year-pill" onclick="selectYear(this,'6')">ปี 6</button>
+            </div>
+            <input type="hidden" id="s1_year" value="">
+        </div>
+    </div>
+
+    <!-- ─── ศิษย์เก่า ─── -->
+    <div class="conditional-section" id="status-alumni-wrap">
+        <div class="sub-card">
+            <span class="sub-card-label">3.1 สถาบันที่ท่านสำเร็จการศึกษา <span class="required">*</span></span>
+            <div class="select-wrapper" style="margin-bottom:10px;">
+                <select id="s1_institution_alm" onchange="onAlmInstitutionChange()">
+                    <option value="">— โปรดเลือกสถาบัน —</option>
+                    <option>จุฬาลงกรณ์มหาวิทยาลัย</option>
+                    <option>มหาวิทยาลัยเกษตรศาสตร์</option>
+                    <option>มหาวิทยาลัยขอนแก่น</option>
+                    <option>มหาวิทยาลัยเทคโนโลยีมหานคร</option>
+                    <option>มหาวิทยาลัยมหิดล</option>
+                    <option>มหาวิทยาลัยเชียงใหม่</option>
+                    <option>มหาวิทยาลัยมหาสารคาม</option>
+                    <option>มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย</option>
+                    <option>มหาวิทยาลัยเทคโนโลยีราชมงคลตะวันออก</option>
+                    <option>มหาวิทยาลัยสงขลานครินทร์</option>
+                    <option>มหาวิทยาลัยเวสเทิร์น</option>
+                    <option>มหาวิทยาลัยวลัยลักษณ์</option>
+                    <option value="other">อื่น ๆ</option>
+                </select>
+            </div>
+            <div class="conditional-section" id="alm-institution-other-wrap" style="margin-bottom:12px;">
+                <input type="text" id="s1_institution_alm_other" placeholder="โปรดระบุชื่อสถาบัน">
+            </div>
+            <span class="sub-card-label" style="margin-top:8px; display:block;">3.2 สาขาวิชา <span class="required">*</span></span>
+            <div class="select-wrapper" style="margin-bottom:12px;">
+                <select id="s1_major_alm">
+                    <option value="สัตวแพทยศาสตร์บัณฑิต" selected>สัตวแพทยศาสตร์บัณฑิต</option>
+                    <option value="สาขาวิชาการพยาบาลสัตว์">สาขาวิชาการพยาบาลสัตว์</option>
+                    <option value="สาขาวิชาเทคนิคการสัตวแพทย์">สาขาวิชาเทคนิคการสัตวแพทย์</option>
+                    <option value="สาขาวิชาเทคโนโลยีชีวภาพสัตว์">สาขาวิชาเทคโนโลยีชีวภาพสัตว์</option>
+                    <option value="สาขาวิทยาศาสตร์สุขภาพสัตว์">สาขาวิทยาศาสตร์สุขภาพสัตว์</option>
+                </select>
+            </div>
+            <span class="sub-card-label" style="margin-top:8px; display:block;">3.3 ปีที่ท่านสำเร็จการศึกษา <span class="required">*</span></span>
+            <span style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:8px;">กรุณากรอกปีพ.ศ.ที่ท่านสำเร็จการศึกษา</span>
+            <input type="text" id="s1_grad_year" placeholder="เช่น 2566" style="max-width:200px; margin-bottom:14px;">
+            <span class="sub-card-label">3.4 สายงานของท่านในปัจจุบัน <span class="required">*</span></span>
+            <span style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:10px;">เลือกได้มากกว่า 1 ตัวเลือก</span>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="โรงพยาบาล/คลินิกสัตว์เล็ก"><span class="checkbox-label">โรงพยาบาล/คลินิกสัตว์เล็ก</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="ฟาร์มสัตว์ปีก"><span class="checkbox-label">ฟาร์มสัตว์ปีก</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="ฟาร์มสุกร"><span class="checkbox-label">ฟาร์มสุกร</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="ฟาร์มโคนม"><span class="checkbox-label">ฟาร์มโคนม</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="ฟาร์มม้า"><span class="checkbox-label">ฟาร์มม้า</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="สัตว์น้ำ (สัตว์เศรษฐกิจ)"><span class="checkbox-label">สัตว์น้ำ (สัตว์เศรษฐกิจ)</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="สัตว์น้ำ (ปลาสวยงาม)"><span class="checkbox-label">สัตว์น้ำ (ปลาสวยงาม)</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="สวนสัตว์"><span class="checkbox-label">สวนสัตว์</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="ห้องปฏิบัติการชันสูตรและวิจัยทางการแพทย์"><span class="checkbox-label">ห้องปฏิบัติการชันสูตรและวิจัยทางการแพทย์</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="ธุรกิจยาสัตว์เลี้ยง"><span class="checkbox-label">ธุรกิจยาสัตว์เลี้ยง</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="ธุรกิจยาปศุสัตว์"><span class="checkbox-label">ธุรกิจยาปศุสัตว์</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="การผลิตชีวภัณฑ์"><span class="checkbox-label">การผลิตชีวภัณฑ์</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="โรงงานอาหารสัตว์"><span class="checkbox-label">โรงงานอาหารสัตว์</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="สัตวแพทยสาธารณสุข (Zoonosis/งานระบาดวิทยา)"><span class="checkbox-label">สัตวแพทยสาธารณสุข (Zoonosis/งานระบาดวิทยา)</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="สัตวแพทยสาธารณสุข (มาตรฐานสินค้าเกษตรและอาหาร)"><span class="checkbox-label">สัตวแพทยสาธารณสุข (มาตรฐานสินค้าเกษตรและอาหาร)</span></label>
+            <label class="checkbox-item"><input type="checkbox" name="s1_career" value="โรงงานแปรรูปผลิตภัณฑ์สุกร/สัตว์น้ำ/สัตว์ปีก"><span class="checkbox-label">โรงงานแปรรูปผลิตภัณฑ์สุกร/สัตว์น้ำ/สัตว์ปีก</span></label>
+            <div class="other-row" id="grad-study-row">
+                <input type="checkbox" id="career_grad_cb" onchange="toggleGradStudy(this.checked)">
+                <span class="other-label">กำลังศึกษาต่อระดับบัณฑิตศึกษา</span>
+                <input type="text" id="s1_career_grad_major" class="other-text-input" placeholder="โปรดระบุสาขาวิชาที่ท่านกำลังศึกษา" disabled>
+            </div>
+            <div class="other-row">
+                <input type="checkbox" id="career_other_cb" onchange="toggleOther('s1_career_other', this.checked)">
+                <span class="other-label">อื่น ๆ</span>
+                <input type="text" id="s1_career_other" class="other-text-input" placeholder="โปรดระบุสายงาน" disabled>
+            </div>
+        </div>
+    </div>
+    <div class="error-message">กรุณาเลือกสถานะนิสิต</div>
+</div>
+
+<!-- Q4: GPAX -->
+<div class="question-card" id="card-s1_gpax">
+    <label class="question-title">4. เกรดเฉลี่ยสะสม (GPAX) ปัจจุบัน</label>
+    <span class="question-subtitle">กรอกเป็นทศนิยม 2 ตำแหน่ง เช่น 3.25 (ไม่บังคับ)</span>
+    <input type="text" id="s1_gpax" placeholder="0.00 – 4.00" style="max-width:200px;" oninput="validateGpaxInput(this)">
+    <div class="error-message">กรุณาระบุเกรดเฉลี่ยสะสมของท่านเป็นทศนิยม 2 ตำแหน่ง</div>
+</div>
+
+<!-- ==================== ส่วนที่ 2 ==================== -->
+<div class="section-gap"></div>
+<div class="question-card section-header">
+    <h3>ส่วนที่ 2: ประเมินหลักสูตรสัตวแพทยศาสตรบัณฑิต (ปริญญาตรี)</h3>
+    <p>โปรดแสดงความคิดเห็นเกี่ยวกับหลักสูตรสัตวแพทยศาสตร์บัณฑิตที่ท่านกำลังศึกษาหรือสำเร็จการศึกษามา</p>
+</div>
+
+<!-- S2 Q1 -->
+<div class="likert-item-card" id="card-s2_q1">
+    <label class="question-title" style="margin-bottom:14px;">1. การจัดการเรียนการสอนในรายวิชาต่าง ๆ มีการจัดลำดับเป็นระบบ ไม่ซ้ำซ้อน และเชื่อมโยงกันอย่างต่อเนื่องตั้งแต่ชั้นวิทยาศาสตร์พื้นฐาน (Basic Science) ชั้นปรีคลินิก จนถึงชั้นคลินิก <span class="required">*</span></label>
+    <div class="single-scale-standalone">
+        <div class="scale-labels"><span>เห็นด้วยน้อยที่สุด</span><span>เห็นด้วยมากที่สุด</span></div>
+        <div class="single-likert" id="s2q1-scale"></div>
+    </div>
+    <div class="conditional-section" id="s2q1-comment-wrap" style="margin-top:14px;">
+        <label style="font-size:0.9rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">โปรดแสดงความคิดเห็นหรือข้อเสนอแนะ</label>
+        <textarea id="s2_q1_comment" placeholder="โปรดระบุ (ถ้ามี)" rows="3"></textarea>
+    </div>
+    <div class="error-message">กรุณาเลือกระดับการประเมิน</div>
+</div>
+
+<!-- S2 Q2 -->
+<div class="likert-item-card" id="card-s2_q2">
+    <label class="question-title" style="margin-bottom:14px;">2. รายวิชาภาคบรรยายและภาคปฏิบัติการ (แล็บ) ในชั้นปรีคลินิก มีเนื้อหาที่สอดคล้อง ส่งเสริมซึ่งกันและกัน และช่วยเตรียมความพร้อมด้านทฤษฎีเพื่อก้าวสู่ชั้นคลินิก <span class="required">*</span></label>
+    <div class="single-scale-standalone">
+        <div class="scale-labels"><span>เห็นด้วยน้อยที่สุด</span><span>เห็นด้วยมากที่สุด</span></div>
+        <div class="single-likert" id="s2q2-scale"></div>
+    </div>
+    <div class="conditional-section" id="s2q2-comment-wrap" style="margin-top:14px;">
+        <label style="font-size:0.9rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">โปรดแสดงความคิดเห็นหรือข้อเสนอแนะ</label>
+        <textarea id="s2_q2_comment" placeholder="โปรดระบุ (ถ้ามี)" rows="3"></textarea>
+    </div>
+    <div class="error-message">กรุณาเลือกระดับการประเมิน</div>
+</div>
+
+<!-- S2 Q3 -->
+<div class="likert-item-card" id="card-s2_q3">
+    <label class="question-title" style="margin-bottom:14px;">3. การจัดการเรียนการสอนในชั้นปรีคลินิกโดยภาพรวม ช่วยเตรียมความพร้อมในการฝึกปฏิบัติงานจริงบนชั้นคลินิกได้อย่างเหมาะสม <span class="required">*</span></label>
+    <div class="single-scale-standalone">
+        <div class="scale-labels"><span>เห็นด้วยน้อยที่สุด</span><span>เห็นด้วยมากที่สุด</span></div>
+        <div class="single-likert" id="s2q3-scale"></div>
+    </div>
+    <div class="conditional-section" id="s2q3-comment-wrap" style="margin-top:14px;">
+        <label style="font-size:0.9rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">โปรดแสดงความคิดเห็นหรือข้อเสนอแนะ</label>
+        <textarea id="s2_q3_comment" placeholder="โปรดระบุ (ถ้ามี)" rows="3"></textarea>
+    </div>
+    <div class="error-message">กรุณาเลือกระดับการประเมิน</div>
+</div>
+
+<!-- S2 Q4 -->
+<div class="likert-item-card" id="card-s2_q4">
+    <label class="question-title" style="margin-bottom:14px;">4. การฝึกปฏิบัติงานบนโรงพยาบาลสัตว์หรือหน่วยงานทางคลินิกมีการจัดสรรเคสและภาระงานที่เหมาะสมต่อการเรียนรู้ของนักศึกษา <span class="required">*</span></label>
+    <div class="single-scale-standalone">
+        <div class="scale-labels"><span>เห็นด้วยน้อยที่สุด</span><span>เห็นด้วยมากที่สุด</span></div>
+        <div class="single-likert" id="s2q4-scale"></div>
+    </div>
+    <div class="conditional-section" id="s2q4-comment-wrap" style="margin-top:14px;">
+        <label style="font-size:0.9rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">โปรดแสดงความคิดเห็นหรือข้อเสนอแนะ</label>
+        <textarea id="s2_q4_comment" placeholder="โปรดระบุ (ถ้ามี)" rows="3"></textarea>
+    </div>
+    <div class="error-message">กรุณาเลือกระดับการประเมิน</div>
+</div>
+
+<!-- S2 Q5 -->
+<div class="likert-item-card" id="card-s2_q5">
+    <label class="question-title" style="margin-bottom:14px;">5. การจัดการเรียนการสอนและการฝึกปฏิบัติในชั้นคลินิกช่วยเตรียมความพร้อมให้สามารถออกไปปฏิบัติงานจริงในวิชาชีพสัตวแพทย์ได้อย่างมั่นใจ <span class="required">*</span></label>
+    <div class="single-scale-standalone">
+        <div class="scale-labels"><span>เห็นด้วยน้อยที่สุด</span><span>เห็นด้วยมากที่สุด</span></div>
+        <div class="single-likert" id="s2q5-scale"></div>
+    </div>
+    <div class="conditional-section" id="s2q5-comment-wrap" style="margin-top:14px;">
+        <label style="font-size:0.9rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">โปรดแสดงความคิดเห็นหรือข้อเสนอแนะ</label>
+        <textarea id="s2_q5_comment" placeholder="โปรดระบุ (ถ้ามี)" rows="3"></textarea>
+    </div>
+    <div class="error-message">กรุณาเลือกระดับการประเมิน</div>
+</div>
+
+<!-- S2 Q6 -->
+<div class="likert-item-card" id="card-s2_q6">
+    <label class="question-title" style="margin-bottom:14px;">6. การจัดการเรียนการสอนในรายวิชา "สหกิจศึกษา" (ฝึกงาน) นิสิตได้รับทราบข้อมูลทั่วถึง เจ้าหน้าที่พร้อมและมีช่องทางการให้ความช่วยเหลือ <span class="required">*</span></label>
+    <div class="single-scale-standalone">
+        <div class="scale-labels"><span>เห็นด้วยน้อยที่สุด</span><span>เห็นด้วยมากที่สุด</span></div>
+        <div class="single-likert" id="s2q6-scale"></div>
+    </div>
+    <div class="conditional-section" id="s2q6-comment-wrap" style="margin-top:14px;">
+        <label style="font-size:0.9rem; font-weight:bold; color:#555; display:block; margin-bottom:8px;">โปรดแสดงความคิดเห็นหรือข้อเสนอแนะ</label>
+        <textarea id="s2_q6_comment" placeholder="โปรดระบุ (ถ้ามี)" rows="3"></textarea>
+    </div>
+    <div class="error-message">กรุณาเลือกระดับการประเมิน</div>
+</div>
+
+<!-- S2 Q7 -->
+<div class="question-card" id="card-s2_q7">
+    <label class="question-title">7. ท่านคิดว่าจุดใดเป็น "จุดแข็ง" ในหลักสูตรของท่านที่ควรรักษาไว้ <span class="required">*</span></label>
+    <textarea id="s2_q7" placeholder="โปรดระบุ..." rows="3"></textarea>
+    <div class="error-message">กรุณาระบุจุดแข็งของหลักสูตร</div>
+</div>
+
+<!-- S2 Q8 -->
+<div class="question-card" id="card-s2_q8">
+    <label class="question-title">8. ท่านคิดว่าจุดใดเป็น "จุดอ่อน" ในหลักสูตรของท่านที่ควรได้รับการแก้ไข <span class="required">*</span></label>
+    <textarea id="s2_q8" placeholder="โปรดระบุ..." rows="3"></textarea>
+    <div class="error-message">กรุณาระบุจุดอ่อนของหลักสูตร</div>
+</div>
+
+<!-- S2 Q9: 3-point Teaching Methods -->
+<div class="question-card" id="card-s2_q9_group">
+    <label class="question-title">9. วิธีการจัดการเรียนการสอนรูปแบบใดที่ช่วยให้ท่านเรียนรู้ได้ดีที่สุด <span class="required">*</span></label>
+    <div id="q9-items-container"></div>
+    <div class="error-message">กรุณาประเมินทุกรายการให้ครบถ้วน</div>
+</div>
+
+<!-- S2 Q10: 3-point Assessment Methods -->
+<div class="question-card" id="card-s2_q10_group">
+    <label class="question-title">10. วิธีการประเมินผลรูปแบบใดที่ช่วยให้ท่านเรียนรู้ได้ดีที่สุด <span class="required">*</span></label>
+    <div id="q10-items-container"></div>
+    <div class="error-message">กรุณาประเมินทุกรายการให้ครบถ้วน</div>
+</div>
+
+<!-- S2 Q11 -->
+<div class="question-card">
+    <label class="question-title">11. โปรดแสดงความคิดเห็นหรือข้อเสนอแนะเพิ่มเติมเกี่ยวกับหลักสูตรสัตวแพทยศาสตรบัณฑิตปัจจุบัน</label>
+    <textarea id="s2_q11" placeholder="โปรดระบุความคิดเห็นเพิ่มเติม (ถ้ามี)" rows="3"></textarea>
+</div>
+
+<!-- ==================== ส่วนที่ 3 ==================== -->
+<div class="section-gap"></div>
+<div class="question-card section-header">
+    <h3>ส่วนที่ 3: การประเมินสมรรถนะทางสัตวแพทย์ตามข้อกำหนดของสัตวแพทยสภา</h3>
+    <p>โปรดเลือกสมรรถนะทางสัตวแพทย์ตามหลักสูตรปัจจุบันในสถาบันของท่าน ที่เห็นสมควรแก้ไขหรือพัฒนาเพิ่มเติม</p>
+</div>
+
+<div class="question-card">
+    <label class="question-title">โปรดเลือกสมรรถนะที่ควรได้รับการพัฒนาในหลักสูตร</label>
+    <span class="question-subtitle">เลือกได้มากกว่า 1 ข้อ (ไม่บังคับ)</span>
+    <div id="competency-container"></div>
+</div>
+
+<!-- ==================== ส่วนที่ 4 ==================== -->
+<div class="section-gap"></div>
+<div class="question-card section-header">
+    <h3>ส่วนที่ 4: ทักษะและความสามารถเชิงบุคลิกภาพและทัศนคติที่จำเป็น (Soft Skills)</h3>
+    <p>โปรดประเมินระดับความมั่นใจเชิงบุคลิกภาพและทัศนคติของท่าน (1 = มั่นใจน้อยที่สุด, 5 = มั่นใจมากที่สุด)</p>
+</div>
+
+<div id="s4-items-container"></div>
+
+<div class="question-card">
+    <label class="question-title">11. โปรดแสดงความคิดเห็นหรือข้อเสนอแนะเพิ่มเติมเกี่ยวกับทักษะและความสามารถเชิงบุคลิกภาพและทัศนคติที่จำเป็น</label>
+    <textarea id="s4_comment" placeholder="โปรดระบุความคิดเห็นเพิ่มเติม (ถ้ามี)" rows="3"></textarea>
+</div>
+
+<!-- ==================== ส่วนที่ 5 ==================== -->
+<div class="section-gap"></div>
+<div class="question-card section-header">
+    <h3>ส่วนที่ 5: สิ่งอำนวยความสะดวกและสภาพแวดล้อมการเรียนรู้</h3>
+    <p>โปรดให้คะแนนความพึงพอใจต่อสิ่งอำนวยความสะดวกต่าง ๆ (1 = ไม่พึงพอใจเลย, 5 = พึงพอใจมาก)</p>
+</div>
+
+<!-- กลุ่ม 1: สภาพแวดล้อมทางกายภาพ -->
+<div class="facility-group-card">
+    <div class="facility-group-title">1. สภาพแวดล้อมทางกายภาพและเทคโนโลยี</div>
+    <div class="facility-sub-item" id="card-s5_1_1">
+        <div class="facility-sub-item-title">1.1 ห้องเรียนและห้องบรรยาย <span class="required">*</span></div>
+        <p class="facility-sub">ขนาด เครื่องเสียง แสงสว่าง</p>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s5_1_1-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-sub-item" id="card-s5_1_2">
+        <div class="facility-sub-item-title">1.2 ห้องปฏิบัติการแล็บ <span class="required">*</span></div>
+        <p class="facility-sub">ความพร้อมของอุปกรณ์ ความปลอดภัย ความสะอาด</p>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s5_1_2-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-sub-item" id="card-s5_1_3">
+        <div class="facility-sub-item-title">1.3 ห้องสมุด และ Co-Working Space <span class="required">*</span></div>
+        <p class="facility-sub">ความเหมาะสมของพื้นที่ ปริมาณสื่อการเรียนรู้ ความเร็วอินเทอร์เน็ต</p>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s5_1_3-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-textarea-item">
+        <label>1.4 โปรดแสดงความเห็นหรือข้อเสนอแนะเกี่ยวกับสภาพแวดล้อมทางกายภาพและเทคโนโลยีเพิ่มเติม</label>
+        <textarea id="s5_1_4" placeholder="โปรดระบุ (ถ้ามี)" rows="2"></textarea>
+    </div>
+</div>
+
+<!-- กลุ่ม 2: พื้นที่ปฏิบัติงาน -->
+<div class="facility-group-card">
+    <div class="facility-group-title">2. พื้นที่ปฏิบัติงานทางสัตวแพทย์</div>
+    <div class="facility-sub-item" id="card-s5_2_1">
+        <div class="facility-sub-item-title">2.1 โรงพยาบาลสัตว์ และ คลินิกฝึกปฏิบัติ <span class="required">*</span></div>
+        <p class="facility-sub">อุปกรณ์ทางการแพทย์ จำนวนเคสที่ใช้ฝึก ความพร้อมของเครื่องมือ</p>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s5_2_1-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-sub-item" id="card-s5_2_2">
+        <div class="facility-sub-item-title">2.2 สถานที่ฝึกปฏิบัติการทางปศุสัตว์ <span class="required">*</span></div>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s5_2_2-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-textarea-item">
+        <label>2.3 โปรดแสดงความเห็นหรือข้อเสนอแนะเกี่ยวกับพื้นที่ปฏิบัติงานทางสัตวแพทย์เพิ่มเติม</label>
+        <textarea id="s5_2_3" placeholder="โปรดระบุ (ถ้ามี)" rows="2"></textarea>
+    </div>
+</div>
+
+<!-- ==================== ส่วนที่ 6 ==================== -->
+<div class="section-gap"></div>
+<div class="question-card section-header">
+    <h3>ส่วนที่ 6: การสนับสนุนจากฝ่ายบริการและระบบงานสนับสนุนของคณะ</h3>
+    <p>โปรดระบุระดับความพึงพอใจต่อการให้บริการของหน่วยงานสนับสนุนต่าง ๆ ภายในคณะ (1 = ไม่พึงพอใจเลย, 5 = พึงพอใจมาก)</p>
+</div>
+
+<!-- กลุ่ม 1: ฝ่ายวิชาการ -->
+<div class="facility-group-card">
+    <div class="facility-group-title">1. ฝ่ายวิชาการและงานทะเบียน</div>
+    <div class="facility-sub-item" id="card-s6_1_1">
+        <div class="facility-sub-item-title">1.1 ความสะดวกในการเข้าถึงข้อมูลการเรียน <span class="required">*</span></div>
+        <p class="facility-sub">ตารางเรียน, ข้อมูลรายวิชา, การลงทะเบียน</p>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s6_1_1-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-sub-item" id="card-s6_1_2">
+        <div class="facility-sub-item-title">1.2 ความรวดเร็วและถูกต้องแม่นยำในการให้บริการ <span class="required">*</span></div>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s6_1_2-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-sub-item" id="card-s6_1_3">
+        <div class="facility-sub-item-title">1.3 การให้คำปรึกษาเกี่ยวกับระเบียบหลักสูตรหรือปัญหาการเรียน <span class="required">*</span></div>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s6_1_3-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-textarea-item">
+        <label>1.4 โปรดแสดงความคิดเห็นหรือข้อเสนอแนะเกี่ยวกับฝ่ายวิชาการและงานทะเบียน</label>
+        <textarea id="s6_1_4" placeholder="โปรดระบุ (ถ้ามี)" rows="2"></textarea>
+    </div>
+</div>
+
+<!-- กลุ่ม 2: ฝ่ายกิจการนิสิต -->
+<div class="facility-group-card">
+    <div class="facility-group-title">2. ฝ่ายกิจการนิสิต</div>
+    <div class="facility-sub-item" id="card-s6_2_1">
+        <div class="facility-sub-item-title">2.1 ช่องทางการให้ความช่วยเหลือด้านสุขภาพกาย <span class="required">*</span></div>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s6_2_1-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-sub-item" id="card-s6_2_2">
+        <div class="facility-sub-item-title">2.2 ช่องทางการให้ความช่วยเหลือด้านสุขภาพจิต <span class="required">*</span></div>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s6_2_2-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-sub-item" id="card-s6_2_3">
+        <div class="facility-sub-item-title">2.3 ช่องทางการให้ความช่วยเหลือด้านทุนการศึกษา และรายได้พิเศษ <span class="required">*</span></div>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s6_2_3-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-sub-item" id="card-s6_2_4">
+        <div class="facility-sub-item-title">2.4 ช่องทางการให้ความช่วยเหลือด้านกิจกรรมส่งเสริมของนิสิต <span class="required">*</span></div>
+        <p class="facility-sub">เช่น กิจกรรม Job Fair ค่ายกิจกรรม งานสัมมนา</p>
+        <div class="single-scale-standalone">
+            <div class="scale-labels"><span>ไม่พึงพอใจเลย</span><span>พึงพอใจมาก</span></div>
+            <div class="single-likert" id="s6_2_4-scale"></div>
+        </div>
+        <div class="error-message">กรุณาประเมินในข้อนี้</div>
+    </div>
+    <div class="facility-textarea-item">
+        <label>2.5 โปรดแสดงความคิดเห็นหรือข้อเสนอแนะเกี่ยวกับฝ่ายกิจการนิสิต</label>
+        <textarea id="s6_2_5" placeholder="โปรดระบุ (ถ้ามี)" rows="2"></textarea>
+    </div>
+</div>
+
+<div class="btn-group">
+    <button type="button" class="btn btn-secondary" onclick="openModal('modal-confirm-reset')">ล้างข้อมูล</button>
+    <button type="button" class="btn btn-primary" id="submitBtn" onclick="validateAndSubmit()">ส่งแบบสอบถาม</button>
+</div>
+
+</div><!-- /container -->
+
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxggsp0QHmCSJAluR_O_pYeI48En1km7Mol9V3FiT4noOOpGIfbwO6R2NtG1yGSqj2z/exec";
+
+/* ─────────────────────────────────────────
+   DATA
+───────────────────────────────────────── */
+const TEACHING_METHODS = [
+    { id: '9_1',  label: '9.1 การบรรยายและอภิปราย', sub: '' },
+    { id: '9_2',  label: '9.2 การทำงานกลุ่มและการทำงานเป็นทีม', sub: '' },
+    { id: '9_3',  label: '9.3 การเรียนรู้โดยใช้โครงงานเป็นฐาน (Project-Based Learning)', sub: '' },
+    { id: '9_4',  label: '9.4 การเรียนรู้โดยใช้ปัญหาเป็นฐาน (Problem-Based Learning)', sub: '' },
+    { id: '9_5',  label: '9.5 การเรียนรู้โดยใช้กรณีศึกษา (Case-Based Learning)', sub: '' },
+    { id: '9_6',  label: '9.6 การฝึกปฏิบัติในสถานการณ์จริงหรือสถานการณ์จำลอง', sub: '' },
+    { id: '9_7',  label: '9.7 การฝึกงานหรือสหกิจศึกษาในสถานประกอบการ', sub: '' },
+    { id: '9_8',  label: '9.8 การเรียนรู้แบบผสมผสาน (Blended Learning)', sub: 'หมายถึงการเรียนรู้ในชั้นเรียนควบคู่กับการเรียนรู้ผ่านออนไลน์' },
+    { id: '9_9',  label: '9.9 การเรียนรู้ผ่านดิจิทัลแพลตฟอร์ม (Digital Learning Platform)', sub: '' },
+    { id: '9_10', label: '9.10 การเรียนรู้ด้วยตนเอง (Self-Directed Learning)', sub: '' }
+];
+
+const ASSESSMENT_METHODS = [
+    { id: '10_1',  label: '10.1 การสอบข้อเขียน (ปรนัย/อัตนัย)', sub: '' },
+    { id: '10_2',  label: '10.2 การสอบปฏิบัติ', sub: '' },
+    { id: '10_3',  label: '10.3 การประเมินโครงงาน', sub: '' },
+    { id: '10_4',  label: '10.4 การประเมินพอร์ตโฟลิโอหรือแฟ้มสะสมงาน', sub: '' },
+    { id: '10_5',  label: '10.5 การประเมินการนำเสนอ', sub: '' },
+    { id: '10_6',  label: '10.6 การประเมินรายงานหรือชิ้นงาน', sub: '' },
+    { id: '10_7',  label: '10.7 การประเมินโดยเพื่อนร่วมชั้น (Peer Assessment)', sub: '' },
+    { id: '10_8',  label: '10.8 การประเมินตนเอง (Self-Assessment)', sub: '' },
+    { id: '10_9',  label: '10.9 การประเมินโดยผู้ใช้บัณฑิตหรือสถานประกอบการ', sub: '' },
+    { id: '10_10', label: '10.10 การประเมินตาม milestone', sub: '' }
+];
+
+const S4_ITEMS = [
+    "ความซื่อสัตย์และมีจริยธรรม",
+    "ความรับผิดชอบและตรงต่อเวลา",
+    "ความมุ่งมั่นและอุตสาหะ",
+    "ความเป็นมืออาชีพ",
+    "ความคิดเชิงบวก",
+    "ความยืดหยุ่นและการปรับตัว",
+    "ความกระตือรือร้นในการเรียนรู้",
+    "ความมีวินัยในตนเอง",
+    "ความเป็นผู้ประกอบการและการริเริ่ม",
+    "จิตสาธารณะและความรับผิดชอบต่อสังคม"
+];
+
+const COMPETENCIES = [
+    { cat: "หมวดที่ 1: ความสามารถทั่วไปเกี่ยวกับการประกอบวิชาชีพการสัตวแพทย์และเอกลักษณ์ประจำตัว", items: [
+        "1.1 ปฏิบัติตามกฎหมายและจรรยาบรรณวิชาชีพสัตวแพทย์",
+        "1.2 ตระหนักถึงความสำคัญของการเรียนรู้และพัฒนาตนเองอย่างต่อเนื่อง",
+        "1.3 ยอมรับและปรับตัวต่อความเปลี่ยนแปลงหรือความไม่แน่นอนได้",
+        "1.4 พร้อมตรวจสอบตนเองและยินดีรับการตรวจสอบจากผู้อื่น",
+        "1.5 ทราบข้อจำกัดตนเองและรู้แหล่งขอคำปรึกษาหรือความช่วยเหลือ",
+        "1.6 สื่อสารอย่างมีประสิทธิภาพ รับฟัง และแสดงความเห็นอกเห็นใจ",
+        "1.7 บันทึกประวัติและรายงานสัตว์ป่วยได้ชัดเจนและสืบค้นง่าย",
+        "1.8 ทำงานร่วมกับทีมสหวิชาชีพได้อย่างมีประสิทธิภาพ",
+        "1.9 รับผิดชอบด้านจริยธรรมต่อสัตว์ป่วยและให้ข้อมูลที่ถูกต้องแก่เจ้าของ",
+        "1.10 รับมือกับความกดดันและตอบสนองต่ออารมณ์ของผู้รับบริการอย่างเหมาะสม",
+        "1.11 ยอมรับและประยุกต์ใช้ความรู้สาขาอื่นเพื่อพัฒนางานสัตวแพทย์",
+        "1.12 มีความรู้พื้นฐานด้านการบริหารจัดการสถานพยาบาลสัตว์"
+    ]},
+    { cat: "หมวดที่ 2: ความรู้ความเข้าใจในวิชาการสาขาสัตวแพทยศาสตร์", items: [
+        "2.1 มีความรู้พื้นฐานทางวิทยาศาสตร์และหลักการทำงานของเครื่องมือทางการแพทย์",
+        "2.2 เข้าใจกระบวนการวิจัยและสามารถสืบค้นข้อมูลวิชาการมาประยุกต์ใช้ได้จริง",
+        "2.3 เข้าใจโครงสร้าง ร่างกายปกติ และหลักการเลี้ยงดูสัตว์แต่ละประเภทอย่างถูกต้อง",
+        "2.4 มีความรู้เรื่องสาเหตุ กลไกการเกิดโรค การวินิจฉัย และการรักษาโรคที่พบบ่อย",
+        "2.5 เข้าใจกฎหมายเกี่ยวกับสวัสดิภาพสัตว์ การขนย้าย และโรคระบาดที่ต้องรายงาน",
+        "2.6 มีความรู้เรื่องกฎหมายยาและข้อกำหนดในการใช้ยาในวิชาชีพสัตวแพทย์",
+        "2.7 เข้าใจหลักเภสัชวิทยาและการใช้ยาอย่างสมเหตุสมผลและรับผิดชอบ",
+        "2.8 มีความรู้ด้านการวางแผนป้องกันโรค การทำวัคซีน และการส่งเสริมสุขภาพสัตว์",
+        "2.9 มีความรู้ด้านสาธารณสุขสัตวแพทย์ โรคติดต่อระหว่างสัตว์สู่คน และความปลอดภัยของอาหาร",
+        "2.10 สามารถให้คำแนะนำด้านสวัสดิภาพสัตว์และการปฏิบัติต่อสัตว์อย่างมีมนุษยธรรม"
+    ]},
+    { cat: "หมวดที่ 3: ความสามารถในการปฏิบัติงาน", items: [
+        "3.1 ซักประวัติและบันทึกข้อมูลสัตว์ป่วยหรือข้อมูลฟาร์มได้อย่างถูกต้อง",
+        "3.2 วิเคราะห์และประเมินข้อมูลจากการตรวจร่างกายและผลแล็บเพื่อวินิจฉัยโรค",
+        "3.3 บังคับสัตว์อย่างปลอดภัย ถูกวิธี และเป็นไปตามหลักมนุษยธรรม",
+        "3.4 ตรวจร่างกายสัตว์ได้อย่างครบถ้วนและถูกต้องตามหลักอายุรศาสตร์",
+        "3.5 ช่วยเหลือสัตว์ในภาวะฉุกเฉินและกู้ชีพ (CPR) ได้อย่างถูกต้อง",
+        "3.6 เก็บตัวอย่างส่งตรวจทางห้องปฏิบัติการและแปลผลได้อย่างเหมาะสม",
+        "3.7 ใช้เครื่องเอกซเรย์และอ่านแปลผลภาพถ่ายรังสีเบื้องต้นได้",
+        "3.8 เตรียมอุปกรณ์และดำเนินการผ่าตัดพื้นฐานตามหลักปลอดเชื้อ",
+        "3.9 ให้ยาสลบและยาระงับความรู้สึกเฉพาะที่ได้อย่างถูกต้องและปลอดภัย",
+        "3.10 ให้คำแนะนำด้านสุขภาพและการรักษาแก่เจ้าของสัตว์ได้อย่างชัดเจน",
+        "3.11 ชันสูตรซากสัตว์และสรุปสาเหตุการตายได้อย่างถูกต้องตามหลักวิชาการ",
+        "3.12 ตรวจสุขภาพสัตว์ก่อนฆ่าและตรวจซากเพื่อความปลอดภัยของผู้บริโภค",
+        "3.13 จัดทำโปรแกรมและให้คำปรึกษาในการป้องกันโรคสัตว์ที่สำคัญ",
+        "3.14 วิเคราะห์ข้อมูลสุขภาพและประเมินประสิทธิภาพการผลิตในระดับฟาร์ม",
+        "3.15 ประเมินภาวะโภชนาการและให้คำแนะนำด้านการเลี้ยงดูสัตว์ที่เหมาะสม",
+        "3.16 ควบคุมความเสี่ยงจากโรคและการปนเปื้อนในผลิตภัณฑ์จากสัตว์",
+        "3.17 รายงานสถานการณ์โรคระบาดต่อหน่วยงานที่เกี่ยวข้องตามขั้นตอนที่ถูกต้อง"
+    ]}
+];
+
+/* ─────────────────────────────────────────
+   BUILD SINGLE LIKERT 1–5
+───────────────────────────────────────── */
+function buildScale(containerId, radioName) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    let html = '';
+    for (let n = 1; n <= 5; n++) {
+        html += `<div class="option"><label>${n}</label><input type="radio" name="${radioName}" value="${n}"></div>`;
+    }
+    el.innerHTML = html;
+}
+
+buildScale('s2q1-scale','s2_q1');
+buildScale('s2q2-scale','s2_q2');
+buildScale('s2q3-scale','s2_q3');
+buildScale('s2q4-scale','s2_q4');
+buildScale('s2q5-scale','s2_q5');
+buildScale('s2q6-scale','s2_q6');
+
+buildScale('s5_1_1-scale','s5_1_1');
+buildScale('s5_1_2-scale','s5_1_2');
+buildScale('s5_1_3-scale','s5_1_3');
+buildScale('s5_2_1-scale','s5_2_1');
+buildScale('s5_2_2-scale','s5_2_2');
+
+buildScale('s6_1_1-scale','s6_1_1');
+buildScale('s6_1_2-scale','s6_1_2');
+buildScale('s6_1_3-scale','s6_1_3');
+buildScale('s6_2_1-scale','s6_2_1');
+buildScale('s6_2_2-scale','s6_2_2');
+buildScale('s6_2_3-scale','s6_2_3');
+buildScale('s6_2_4-scale','s6_2_4');
+
+// Conditional comment เมื่อตอบ 1 หรือ 2
+['s2_q1','s2_q2','s2_q3','s2_q4','s2_q5','s2_q6'].forEach(name => {
+    document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+        r.addEventListener('change', function() {
+            const wrap = document.getElementById(name.replace('s2_q','s2q') + '-comment-wrap');
+            if (wrap) wrap.classList.toggle('visible', parseInt(this.value) <= 2);
+        });
+    });
+});
+
+/* ─────────────────────────────────────────
+   BUILD 3-POINT SCALE (Q9 & Q10)
+───────────────────────────────────────── */
+const THREE_POINT_LABELS = ['สำคัญน้อย', 'สำคัญปานกลาง', 'สำคัญมาก'];
+const THREE_POINT_VALUES = ['1', '2', '3'];
+
+function buildThreePointItems(items, containerId, prefix) {
+    const container = document.getElementById(containerId);
+    items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'three-point-card';
+        div.id = `card-${prefix}_${item.id}`;
+        let subtextHtml = item.sub ? `<span class="item-subtext">${item.sub}</span>` : '';
+        let optionsHtml = THREE_POINT_LABELS.map((lbl, i) =>
+            `<div class="option"><label>${lbl}</label><input type="radio" name="${prefix}_${item.id}" value="${THREE_POINT_VALUES[i]}"></div>`
+        ).join('');
+        div.innerHTML = `
+            <label class="question-title" style="margin-bottom:8px;">${item.label} <span class="required">*</span></label>
+            ${subtextHtml}
+            <div class="three-point-scale">
+                <div class="three-point-likert">${optionsHtml}</div>
+            </div>
+            <div class="error-message">กรุณาเลือกระดับความสำคัญ</div>`;
+        container.appendChild(div);
+    });
+}
+
+buildThreePointItems(TEACHING_METHODS,   'q9-items-container',  's2_q9');
+buildThreePointItems(ASSESSMENT_METHODS, 'q10-items-container', 's2_q10');
+
+/* ─────────────────────────────────────────
+   BUILD TWO-COL LIKERT (S4)
+───────────────────────────────────────── */
+function buildTwoColLikert(items, containerId, prefix) {
+    const container = document.getElementById(containerId);
+    items.forEach((label, i) => {
+        const num = i + 1;
+        function makeOpts(name) {
+            let h = '';
+            for (let n = 1; n <= 5; n++) h += `<div class="option"><label>${n}</label><input type="radio" name="${name}" value="${n}"></div>`;
+            return h;
+        }
+        const div = document.createElement('div');
+        div.className = 'likert-item-card';
+        div.id = `card-${prefix}_${num}`;
+        div.innerHTML = `
+            <label class="question-title" style="margin-bottom:14px;">${num}. ${label} <span class="required">*</span></label>
+            <div class="scale-row">
+                <div class="single-scale">
+                    <div class="scale-header" style="color:#5a8bbd;">ระดับความสามารถในปัจจุบัน</div>
+                    <div class="scale-labels"><span>น้อยที่สุด</span><span>มากที่สุด</span></div>
+                    <div class="single-likert">${makeOpts(prefix+'_cur_'+num)}</div>
+                </div>
+                <div class="single-scale scale-target">
+                    <div class="scale-header" style="color:var(--primary);">ระดับความสำคัญ</div>
+                    <div class="scale-labels"><span>น้อยที่สุด</span><span>มากที่สุด</span></div>
+                    <div class="single-likert">${makeOpts(prefix+'_imp_'+num)}</div>
+                </div>
+            </div>
+            <div class="error-message">กรุณาประเมินให้ครบทั้งสองด้าน</div>`;
+        container.appendChild(div);
+    });
+}
+buildTwoColLikert(S4_ITEMS, 's4-items-container', 's4');
+
+/* ─────────────────────────────────────────
+   BUILD COMPETENCY CHECKBOXES
+───────────────────────────────────────── */
+function buildCompetencies() {
+    const container = document.getElementById('competency-container');
+    COMPETENCIES.forEach(cat => {
+        const div = document.createElement('div');
+        div.className = 'competency-category';
+        let html = `<div class="competency-category-title">${cat.cat}</div>`;
+        cat.items.forEach(item => {
+            html += `<label class="checkbox-item">
+                <input type="checkbox" name="s3_competency" value="${item}">
+                <span class="checkbox-label">${item}</span>
+            </label>`;
+        });
+        div.innerHTML = html;
+        container.appendChild(div);
+    });
+}
+buildCompetencies();
+
+/* ─────────────────────────────────────────
+   SECTION 1 CONDITIONAL LOGIC
+───────────────────────────────────────── */
+function onStatusChange() {
+    const val = document.querySelector('input[name="s1_status"]:checked')?.value;
+    document.getElementById('status-current-wrap').classList.toggle('visible', val === 'นิสิตปัจจุบัน');
+    document.getElementById('status-alumni-wrap').classList.toggle('visible', val === 'ศิษย์เก่า');
+    document.getElementById('s1_year').value = '';
+    document.querySelectorAll('.year-pill').forEach(p => p.classList.remove('selected'));
+    ['cur-institution-other-wrap','alm-institution-other-wrap'].forEach(id => {
+        document.getElementById(id)?.classList.remove('visible');
+    });
+}
+
+function onCurInstitutionChange() {
+    const val = document.getElementById('s1_institution_cur').value;
+    document.getElementById('cur-institution-other-wrap').classList.toggle('visible', val === 'other');
+    if (val !== 'other') document.getElementById('s1_institution_cur_other').value = '';
+}
+
+function onAlmInstitutionChange() {
+    const val = document.getElementById('s1_institution_alm').value;
+    document.getElementById('alm-institution-other-wrap').classList.toggle('visible', val === 'other');
+    if (val !== 'other') document.getElementById('s1_institution_alm_other').value = '';
+}
+
+function selectYear(btn, year) {
+    document.querySelectorAll('.year-pill').forEach(p => p.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('s1_year').value = year;
+}
+
+function toggleOther(inputId, enabled) {
+    const inp = document.getElementById(inputId);
+    if (!inp) return;
+    inp.disabled = !enabled;
+    if (!enabled) inp.value = '';
+}
+
+function toggleGradStudy(enabled) {
+    const inp = document.getElementById('s1_career_grad_major');
+    inp.disabled = !enabled;
+    if (!enabled) inp.value = '';
+}
+
+/* ─────────────────────────────────────────
+   GPAX VALIDATION
+───────────────────────────────────────── */
+function validateGpaxInput(input) {
+    const card = document.getElementById('card-s1_gpax');
+    const val = input.value.trim();
+    if (val === '') { card.classList.remove('has-error'); return; }
+    const valid = /^\d\.\d{2}$/.test(val) && parseFloat(val) >= 0 && parseFloat(val) <= 4;
+    card.classList.toggle('has-error', !valid);
+}
+
+/* ─────────────────────────────────────────
+   MODAL
+───────────────────────────────────────── */
+function openModal(id)  { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+/* ─────────────────────────────────────────
+   RESET
+───────────────────────────────────────── */
+function doReset() {
+    closeModal('modal-confirm-reset');
+    document.querySelectorAll('.has-error').forEach(c => c.classList.remove('has-error'));
+    document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+    document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
+    document.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; });
+    document.querySelectorAll('.conditional-section.visible').forEach(el => el.classList.remove('visible'));
+    document.querySelectorAll('.other-text-input').forEach(el => { el.disabled = true; el.value = ''; });
+    document.querySelectorAll('.year-pill.selected').forEach(p => p.classList.remove('selected'));
+    document.getElementById('s1_year').value = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ─────────────────────────────────────────
+   VALIDATE & SUBMIT
+───────────────────────────────────────── */
+function clearAllErrors() { document.querySelectorAll('.has-error').forEach(c => c.classList.remove('has-error')); }
+
+function markError(cardId, msg) {
+    const card = document.getElementById(cardId);
+    if (!card) return null;
+    card.classList.add('has-error');
+    const errEl = card.querySelector('.error-message');
+    if (errEl && msg) errEl.textContent = msg;
+    return card;
+}
+
+function validateAndSubmit() {
+    clearAllErrors();
+    let firstError = null, hasError = false;
+
+    function err(cardId, msg) {
+        const card = markError(cardId, msg);
+        if (!firstError && card) firstError = card;
+        hasError = true;
+    }
+
+    const status = document.querySelector('input[name="s1_status"]:checked')?.value;
+
+    // ─── ส่วนที่ 1 ───
+    if (!document.querySelector('input[name="s1_gender"]:checked')) err('card-s1_gender','กรุณาระบุเพศ');
+    if (!document.querySelector('input[name="s1_age"]:checked'))    err('card-s1_age','กรุณาเลือกช่วงอายุ');
+
+    if (!status) {
+        err('card-s1_status','กรุณาเลือกสถานะนิสิต');
+    } else if (status === 'นิสิตปัจจุบัน') {
+        const inst = document.getElementById('s1_institution_cur').value;
+        if (!inst) err('card-s1_status','กรุณาเลือกสถาบันที่ศึกษา');
+        else if (inst === 'other' && !document.getElementById('s1_institution_cur_other').value.trim())
+            err('card-s1_status','กรุณาระบุชื่อสถาบัน');
+        if (!document.getElementById('s1_year').value)
+            err('card-s1_status','กรุณาเลือกชั้นปีที่ศึกษา');
+    } else if (status === 'ศิษย์เก่า') {
+        const almInst = document.getElementById('s1_institution_alm').value;
+        if (!almInst) err('card-s1_status','กรุณาเลือกสถาบันที่สำเร็จการศึกษา');
+        else if (almInst === 'other' && !document.getElementById('s1_institution_alm_other').value.trim())
+            err('card-s1_status','กรุณาระบุชื่อสถาบัน');
+        if (!document.getElementById('s1_grad_year').value.trim())
+            err('card-s1_status','กรุณาระบุปีที่สำเร็จการศึกษา');
+        const careerChecked = document.querySelector('input[name="s1_career"]:checked');
+        const gradCb = document.getElementById('career_grad_cb').checked;
+        const otherCb = document.getElementById('career_other_cb').checked;
+        if (!careerChecked && !gradCb && !otherCb)
+            err('card-s1_status','กรุณาเลือกสายงานอย่างน้อย 1 ข้อ');
+        else {
+            if (gradCb && !document.getElementById('s1_career_grad_major').value.trim())
+                err('card-s1_status','กรุณาระบุสาขาวิชาที่กำลังศึกษาต่อ');
+            if (otherCb && !document.getElementById('s1_career_other').value.trim())
+                err('card-s1_status','กรุณาระบุสายงานในช่อง "อื่น ๆ"');
+        }
+    }
+
+    const gpaxVal = document.getElementById('s1_gpax').value.trim();
+    if (gpaxVal && !(/^\d\.\d{2}$/.test(gpaxVal) && parseFloat(gpaxVal) >= 0 && parseFloat(gpaxVal) <= 4))
+        err('card-s1_gpax','กรุณาระบุเกรดเฉลี่ยสะสมของท่านเป็นทศนิยม 2 ตำแหน่ง');
+
+    // ─── ส่วนที่ 2: Q1–Q6 Likert ───
+    ['s2_q1','s2_q2','s2_q3','s2_q4','s2_q5','s2_q6'].forEach(name => {
+        if (!document.querySelector(`input[name="${name}"]:checked`)) err('card-' + name,'กรุณาเลือกระดับการประเมิน');
+    });
+    if (!document.getElementById('s2_q7').value.trim()) err('card-s2_q7','กรุณาระบุจุดแข็งของหลักสูตร');
+    if (!document.getElementById('s2_q8').value.trim()) err('card-s2_q8','กรุณาระบุจุดอ่อนของหลักสูตร');
+
+    // Q9: 3-point teaching
+    let q9missing = false;
+    TEACHING_METHODS.forEach(item => {
+        if (!document.querySelector(`input[name="s2_q9_${item.id}"]:checked`)) q9missing = true;
+    });
+    if (q9missing) err('card-s2_q9_group','กรุณาประเมินทุกรายการให้ครบถ้วน');
+
+    // Q10: 3-point assessment
+    let q10missing = false;
+    ASSESSMENT_METHODS.forEach(item => {
+        if (!document.querySelector(`input[name="s2_q10_${item.id}"]:checked`)) q10missing = true;
+    });
+    if (q10missing) err('card-s2_q10_group','กรุณาประเมินทุกรายการให้ครบถ้วน');
+
+    // ─── ส่วนที่ 4 ───
+    S4_ITEMS.forEach((_, i) => {
+        const num = i + 1;
+        if (!document.querySelector(`input[name="s4_cur_${num}"]:checked`) ||
+            !document.querySelector(`input[name="s4_imp_${num}"]:checked`))
+            err(`card-s4_${num}`,'กรุณาประเมินให้ครบทั้งสองด้าน');
+    });
+
+    // ─── ส่วนที่ 5 ───
+    ['s5_1_1','s5_1_2','s5_1_3'].forEach(n => {
+        if (!document.querySelector(`input[name="${n}"]:checked`)) err('card-' + n,'กรุณาประเมินในข้อนี้');
+    });
+    ['s5_2_1','s5_2_2'].forEach(n => {
+        if (!document.querySelector(`input[name="${n}"]:checked`)) err('card-' + n,'กรุณาประเมินในข้อนี้');
+    });
+
+    // ─── ส่วนที่ 6 ───
+    ['s6_1_1','s6_1_2','s6_1_3'].forEach(n => {
+        if (!document.querySelector(`input[name="${n}"]:checked`)) err('card-' + n,'กรุณาประเมินในข้อนี้');
+    });
+    ['s6_2_1','s6_2_2','s6_2_3','s6_2_4'].forEach(n => {
+        if (!document.querySelector(`input[name="${n}"]:checked`)) err('card-' + n,'กรุณาประเมินในข้อนี้');
+    });
+
+    if (hasError) {
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    submitData();
+}
+
+/* ─────────────────────────────────────────
+   COLLECT & SUBMIT
+───────────────────────────────────────── */
+function r(name) { return document.querySelector(`input[name="${name}"]:checked`)?.value || ''; }
+function tv(id)  { return document.getElementById(id)?.value.trim() || ''; }
+
+function getS4() {
+    return S4_ITEMS.map((label, i) => {
+        const num = i + 1;
+        return `${label}: ปัจจุบัน=${r('s4_cur_'+num)} | สำคัญ=${r('s4_imp_'+num)}`;
+    }).join('\n');
+}
+
+function getQ9() {
+    return TEACHING_METHODS.map(item => {
+        const val = r(`s2_q9_${item.id}`);
+        const label = val === '1' ? 'สำคัญน้อย' : val === '2' ? 'สำคัญปานกลาง' : 'สำคัญมาก';
+        return `${item.label}: ${label}`;
+    }).join('\n');
+}
+
+function getQ10() {
+    return ASSESSMENT_METHODS.map(item => {
+        const val = r(`s2_q10_${item.id}`);
+        const label = val === '1' ? 'สำคัญน้อย' : val === '2' ? 'สำคัญปานกลาง' : 'สำคัญมาก';
+        return `${item.label}: ${label}`;
+    }).join('\n');
+}
+
+function submitData() {
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'กำลังส่ง...'; btn.disabled = true;
+
+    const status = document.querySelector('input[name="s1_status"]:checked')?.value || '';
+    let institution='', major='', year='', almInstitution='', almMajor='', gradYear='', careers='';
+
+    if (status === 'นิสิตปัจจุบัน') {
+        const inst = document.getElementById('s1_institution_cur').value;
+        institution = inst === 'other' ? tv('s1_institution_cur_other') : inst;
+        major = document.getElementById('s1_major_cur').value;
+        year  = document.getElementById('s1_year').value;
+    } else if (status === 'ศิษย์เก่า') {
+        const almInst = document.getElementById('s1_institution_alm').value;
+        almInstitution = almInst === 'other' ? tv('s1_institution_alm_other') : almInst;
+        almMajor = document.getElementById('s1_major_alm').value;
+        gradYear = tv('s1_grad_year');
+        const careerVals = Array.from(document.querySelectorAll('input[name="s1_career"]:checked')).map(e => e.value);
+        if (document.getElementById('career_grad_cb').checked)
+            careerVals.push('กำลังศึกษาต่อระดับบัณฑิตศึกษา (' + tv('s1_career_grad_major') + ')');
+        if (document.getElementById('career_other_cb').checked)
+            careerVals.push(tv('s1_career_other'));
+        careers = careerVals.join(' | ');
+    }
+
+    const data = {
+        s1_gender:      r('s1_gender'),
+        s1_age:         r('s1_age'),
+        s1_status:      status,
+        s1_institution: institution || almInstitution,
+        s1_major:       major || almMajor,
+        s1_year:        year,
+        s1_grad_year:   gradYear,
+        s1_careers:     careers,
+        s1_gpax:        tv('s1_gpax'),
+
+        s2_q1: r('s2_q1'), s2_q1_comment: tv('s2_q1_comment'),
+        s2_q2: r('s2_q2'), s2_q2_comment: tv('s2_q2_comment'),
+        s2_q3: r('s2_q3'), s2_q3_comment: tv('s2_q3_comment'),
+        s2_q4: r('s2_q4'), s2_q4_comment: tv('s2_q4_comment'),
+        s2_q5: r('s2_q5'), s2_q5_comment: tv('s2_q5_comment'),
+        s2_q6: r('s2_q6'), s2_q6_comment: tv('s2_q6_comment'),
+        s2_q7:  tv('s2_q7'),
+        s2_q8:  tv('s2_q8'),
+
+        ...Object.fromEntries(
+            TEACHING_METHODS.map(item => [
+                "s2_q9_" + item.id.replace("9_", ""),
+                r("s2_q9_" + item.id)
+            ])
+        ),
+
+        ...Object.fromEntries(
+            ASSESSMENT_METHODS.map(item => [
+                "s2_q10_" + item.id.replace("10_", ""),
+                r("s2_q10_" + item.id)
+            ])
+        ),
+
+        s2_q11: tv('s2_q11'),
+
+        s3_competencies: Array.from(document.querySelectorAll('input[name="s3_competency"]:checked')).map(e => e.value).join(' | '),
+
+        ...Object.fromEntries(
+            S4_ITEMS.flatMap((_, i) => {
+                const num = i + 1;
+                return [
+                    ["s4_current_" + num, r("s4_cur_" + num)],
+                    ["s4_imp_"     + num, r("s4_imp_" + num)]
+                ];
+            })
+        ),
+        s4_comment: tv('s4_comment'),
+
+        s5_1_1: r('s5_1_1'), s5_1_2: r('s5_1_2'), s5_1_3: r('s5_1_3'),
+        s5_1_comment: tv('s5_1_4'),
+        s5_2_1: r('s5_2_1'), s5_2_2: r('s5_2_2'),
+        s5_2_comment: tv('s5_2_3'),
+
+        s6_1_1: r('s6_1_1'), s6_1_2: r('s6_1_2'), s6_1_3: r('s6_1_3'),
+        s6_1_comment: tv('s6_1_4'),
+        s6_2_1: r('s6_2_1'), s6_2_2: r('s6_2_2'), s6_2_3: r('s6_2_3'), s6_2_4: r('s6_2_4'),
+        s6_2_comment: tv('s6_2_5'),
+    };
+
+    fetch(APPS_SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        document.getElementById('modal-success-icon').textContent  = '✅';
+        document.getElementById('modal-success-title').textContent = 'ส่งแบบสอบถามสำเร็จ!';
+        document.getElementById('modal-success-body').textContent  = 'ขอบคุณสำหรับความร่วมมือในการตอบแบบสอบถามครั้งนี้\nข้อมูลของท่านจะถูกใช้เพื่อพัฒนาหลักสูตร CU i-VET เท่านั้น';
+        openModal('modal-success');
+        doReset();
+    })
+    .catch(e => {
+        document.getElementById('modal-success-icon').textContent  = '❌';
+        document.getElementById('modal-success-title').textContent = 'เกิดข้อผิดพลาด';
+        document.getElementById('modal-success-body').textContent  = 'ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง';
+        openModal('modal-success');
+        console.error(e);
+    })
+    .finally(() => { btn.textContent = 'ส่งแบบสอบถาม'; btn.disabled = false; });
+}
+</script>
+</body>
+</html>
